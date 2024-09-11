@@ -1,36 +1,61 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Commits Histogramme</title>
-    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Commits Minutes</title>
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(to right, #87CEFA, #FFD700); /* Dégradé bleu ciel à jaune */
+            color: #333;
+            text-align: center;
+            padding: 50px;
+        }
+        table {
+            margin: 0 auto;
+            border-collapse: collapse;
+            width: 60%;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+    </style>
 </head>
 <body>
-    <div id="chart_div"></div>
+    <h1>Minutes des Commits</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Minute</th>
+                <th>Nombre de Commits</th>
+            </tr>
+        </thead>
+        <tbody id="commits-table-body">
+            <!-- Les données des minutes seront ajoutées ici par JavaScript -->
+        </tbody>
+    </table>
     <script>
-      google.charts.load('current', { packages: ['corechart'] });
-      google.charts.setOnLoadCallback(drawChart);
-
-      function drawChart() {
+        // Récupérer les données des commits
         fetch('/commits/')
-          .then(response => response.json())
-          .then(data => {
-            var dataTable = new google.visualization.DataTable();
-            dataTable.addColumn('string', 'Minute');
-            dataTable.addColumn('number', 'Nombre de commits');
-            data.results.forEach(entry => {
-              dataTable.addRow([entry.minute.toString(), entry.count]);
+            .then(response => response.json())
+            .then(data => {
+                const tableBody = document.getElementById('commits-table-body');
+                data.results.forEach(entry => {
+                    const row = document.createElement('tr');
+                    const minuteCell = document.createElement('td');
+                    const countCell = document.createElement('td');
+                    minuteCell.textContent = entry.minute;
+                    countCell.textContent = entry.count;
+                    row.appendChild(minuteCell);
+                    row.appendChild(countCell);
+                    tableBody.appendChild(row);
+                });
             });
-
-            var options = {
-              title: 'Nombre de commits par minute',
-              legend: { position: 'none' }
-            };
-
-            var chart = new google.visualization.BarChart(document.getElementById('chart_div'));
-            chart.draw(dataTable, options);
-          });
-      }
     </script>
 </body>
 </html>
