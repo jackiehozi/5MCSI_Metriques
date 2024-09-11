@@ -1,76 +1,76 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Minutes des Commits</title>
-    <style>
-        body {
-            font-family: 'Montserrat', sans-serif;
-            background: linear-gradient(to right, #87CEFA, #FFD700); /* Dégradé bleu ciel à jaune */
-            color: #333;
-            text-align: center;
-            padding: 50px;
-        }
-        table {
-            margin: 0 auto;
-            border-collapse: collapse;
-            width: 80%;
-        }
-        th, td {
-            padding: 10px;
-            border: 1px solid #ddd;
-        }
-        th {
-            background-color: #f4f4f4;
-        }
-        tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-        tr:hover {
-            background-color: #f1f1f1;
-        }
-    </style>
-</head>
-<body>
-    <h1>Minutes des Commits</h1>
-    <table>
-        <thead>
-            <tr>
-                <th>Minute</th>
-                <th>Nombre de Commits</th>
-            </tr>
-        </thead>
-        <tbody id="commits-table-body">
-            <!-- Les données des minutes seront ajoutées ici par JavaScript -->
-        </tbody>
-    </table>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Nombre de Commits par Minute</title>
+    <!-- Chargement de la bibliothèque Google Charts -->
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 
-    <script>
-        // Fonction pour charger les données des commits depuis l'API
-        function loadCommitData() {
-            fetch('/commits-data/')
-                .then(response => response.json())
-                .then(data => {
-                    const tableBody = document.getElementById('commits-table-body');
-                    data.results.forEach(entry => {
-                        const row = document.createElement('tr');
-                        const minuteCell = document.createElement('td');
-                        const countCell = document.createElement('td');
+    <script type="text/javascript">
+      // Fonction pour charger Google Charts
+      google.charts.load('current', { packages: ['corechart'] });
+      google.charts.setOnLoadCallback(drawChart);
 
-                        minuteCell.textContent = entry.minute;
-                        countCell.textContent = entry.count;
-
-                        row.appendChild(minuteCell);
-                        row.appendChild(countCell);
-                        tableBody.appendChild(row);
-                    });
-                })
-                .catch(error => console.error('Error fetching commit data:', error));
+      // Fonction pour récupérer les commits depuis l'API GitHub
+      async function fetchCommits() {
+        try {
+          const response = await fetch('https://api.github.com/repos/jackiehozi/5MCSI_Metriques/commits');
+          const commitsData = await response.json();
+          console.log(commitsData); // Affiche les données dans la console pour le débogage
+          return commitsData;
+        } catch (error) {
+          console.error('Erreur lors de la récupération des commits :', error);
         }
+      }
 
-        // Charger les données lorsque la page est chargée
-        document.addEventListener('DOMContentLoaded', loadCommitData);
+      // Fonction pour dessiner le graphique
+      function drawChart() {
+        console.log("Google Charts est chargé et la fonction drawChart est appelée.");
+        fetchCommits().then(commitsData => {
+          // Créer un tableau de données pour le graphique
+          var data = new google.visualization.DataTable();
+          data.addColumn('string', 'Minute');
+          data.addColumn('number', 'Nombre de Commits');
+
+          var commitsPerMinute = {};
+
+          // Traitement des données des commits
+          commitsData.forEach(commit => {
+            const dateString = commit.commit.author.date;
+            const dateObject = new Date(dateString);
+            const minute = dateObject.getFullYear() + '-' +
+                           (dateObject.getMonth() + 1).toString().padStart(2, '0') + '-' +
+                           dateObject.getDate().toString().padStart(2, '0') + ' ' +
+                           dateObject.getHours().toString().padStart(2, '0') + ':' +
+                           dateObject.getMinutes().toString().padStart(2, '0');
+
+            // Compter le nombre de commits par minute
+            commitsPerMinute[minute] = (commitsPerMinute[minute] || 0) + 1;
+          });
+
+          // Ajouter les données des commits au tableau Google Charts
+          Object.entries(commitsPerMinute).forEach(([minute, count]) => {
+            data.addRow([minute, count]);
+          });
+
+          // Options pour personnaliser le graphique
+          var options = {
+            title: 'Nombre de Commits par Minute',
+            curveType: 'function',
+            legend: { position: 'bottom' }
+          };
+
+          // Dessiner le graphique dans le div avec id 'chart_div'
+          var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+          chart.draw(data, options);
+        });
+      }
     </script>
-</body>
+  </head>
+
+  <body>
+    <h2>Nombre de Commits par Minute</h2>
+    <!-- Div pour afficher le graphique -->
+    <div id="chart_div" style="width: 900px; height: 500px;"></div>
+  </body>
 </html>
