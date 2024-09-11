@@ -53,11 +53,14 @@ def extract_minutes(date_string):
     minutes = date_object.minute
     return jsonify({'minutes': minutes})
 
-
-
 # Route pour afficher les minutes des commits
 @app.route('/commits/')
 def commits():
+    return render_template("commits.html")
+
+# Route pour afficher les minutes des commits
+@app.route('/commits-data/')
+def commits-data():
     try:
         # Remplacez l'URL par celle de votre propre repo si nécessaire
         url = 'https://api.github.com/repos/jackiehozi/5MCSI_Metriques/commits'
