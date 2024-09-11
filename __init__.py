@@ -9,7 +9,7 @@ app = Flask(__name__)
                                                                                                                                        
 @app.route('/')
 def hello_world():
-    return render_template('hello.html') #commit4
+    return render_template('hello.html') #commit5
 
 # Nouvelle route pour la page de contact
 @app.route("/contact/")
@@ -33,6 +33,12 @@ def meteo():
 
     # Retourner les résultats sous forme de JSON
     return jsonify(results=results)
+
+
+# Nouvelle route pour le rapport graphique
+@app.route("/rapport/")
+def mongraphique():
+    return render_template("graphique.html")
 
   
 if __name__ == "__main__":
