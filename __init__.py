@@ -25,7 +25,7 @@ def meteo():
     json_content = json.loads(raw_content.decode('utf-8'))  # Décoder et charger en JSON
     results = []
 
-    # Parcourir les éléments de la liste et extraire les dates et températures
+    # Parcourir les éléments de la liste et extraire les dates et temperatures
     for list_element in json_content.get('list', []):
         dt_value = list_element.get('dt')  # Extraction du timestamp
         temp_day_value = list_element.get('main', {}).get('temp') - 273.15  # Conversion en °C
