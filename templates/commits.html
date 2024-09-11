@@ -39,23 +39,6 @@
             <!-- Les données des minutes seront ajoutées ici par JavaScript -->
         </tbody>
     </table>
-    <script>
-        // Récupérer les données des commits
-        fetch('/commits/')
-            .then(response => response.json())
-            .then(data => {
-                const tableBody = document.getElementById('commits-table-body');
-                data.results.forEach(entry => {
-                    const row = document.createElement('tr');
-                    const minuteCell = document.createElement('td');
-                    const countCell = document.createElement('td');
-                    minuteCell.textContent = entry.minute;
-                    countCell.textContent = entry.count;
-                    row.appendChild(minuteCell);
-                    row.appendChild(countCell);
-                    tableBody.appendChild(row);
-                });
-            });
-    </script>
+    
 </body>
 </html>
