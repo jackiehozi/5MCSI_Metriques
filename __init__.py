@@ -7,7 +7,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def hello_world():
-    return render_template('hello.html')  # commit9
+    return render_template('hello.html')  # commit8
 
 # Nouvelle route pour la page de contact
 @app.route("/contact/")
@@ -17,7 +17,6 @@ def contact():
 # Nouvelle route pour afficher les données météo de Tawarano
 @app.route('/tawarano/')
 def meteo():
-    # URL de l'API avec les données météo de Tawarano
     response = requests.get('https://samples.openweathermap.org/data/2.5/forecast?lat=0&lon=0&appid=xxx')
     json_content = response.json()  # Décoder et charger en JSON
     results = []
