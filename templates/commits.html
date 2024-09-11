@@ -39,6 +39,32 @@
             <!-- Les données des minutes seront ajoutées ici par JavaScript -->
         </tbody>
     </table>
-    
+
+    <script>
+        // Fonction pour charger les données des commits depuis l'API
+        function loadCommitData() {
+            fetch('/commit-data/')
+                .then(response => response.json())
+                .then(data => {
+                    const tableBody = document.getElementById('commits-table-body');
+                    data.results.forEach(entry => {
+                        const row = document.createElement('tr');
+                        const minuteCell = document.createElement('td');
+                        const countCell = document.createElement('td');
+
+                        minuteCell.textContent = entry.minute;
+                        countCell.textContent = entry.count;
+
+                        row.appendChild(minuteCell);
+                        row.appendChild(countCell);
+                        tableBody.appendChild(row);
+                    });
+                })
+                .catch(error => console.error('Error fetching commit data:', error));
+        }
+
+        // Charger les données lorsque la page est chargée
+        document.addEventListener('DOMContentLoaded', loadCommitData);
+    </script>
 </body>
 </html>
