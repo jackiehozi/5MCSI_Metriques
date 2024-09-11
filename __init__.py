@@ -1,15 +1,13 @@
-from flask import Flask, render_template_string, render_template, jsonify
-from flask import render_template
-from flask import json
+import requests
+import json
+from flask import Flask, render_template, jsonify
 from datetime import datetime
-from urllib.request import urlopen
-import sqlite3
-                                                                                                                                       
-app = Flask(__name__)                                                                                                                  
-                                                                                                                                       
+
+app = Flask(__name__)
+
 @app.route('/')
 def hello_world():
-    return render_template('hello.html') #commit8
+    return render_template('hello.html')  # commit9
 
 # Nouvelle route pour la page de contact
 @app.route("/contact/")
@@ -20,9 +18,8 @@ def contact():
 @app.route('/tawarano/')
 def meteo():
     # URL de l'API avec les données météo de Tawarano
-    response = urlopen('https://samples.openweathermap.org/data/2.5/forecast?lat=0&lon=0&appid=xxx')
-    raw_content = response.read()  # Lire le contenu brut
-    json_content = json.loads(raw_content.decode('utf-8'))  # Décoder et charger en JSON
+    response = requests.get('https://samples.openweathermap.org/data/2.5/forecast?lat=0&lon=0&appid=xxx')
+    json_content = response.json()  # Décoder et charger en JSON
     results = []
 
     # Parcourir les éléments de la liste et extraire les dates et températures
@@ -34,12 +31,10 @@ def meteo():
     # Retourner les résultats sous forme de JSON
     return jsonify(results=results)
 
-
 # Nouvelle route pour le rapport graphique
 @app.route("/rapport/")
 def mongraphique():
     return render_template("graphique.html")
-
 
 # Route pour afficher l'histogramme
 @app.route("/histogramme/")
@@ -57,15 +52,11 @@ def commits():
         commit_time = commit['commit']['author']['date']
         date_object = datetime.strptime(commit_time, '%Y-%m-%dT%H:%M:%SZ')
         minute = date_object.minute
-        if minute in commit_minutes:
-            commit_minutes[minute] += 1
-        else:
-            commit_minutes[minute] = 1
+        commit_minutes[minute] = commit_minutes.get(minute, 0) + 1
     
     # Préparer les données pour le graphique
     results = [{'minute': minute, 'count': count} for minute, count in sorted(commit_minutes.items())]
     return jsonify(results=results)
 
-  
 if __name__ == "__main__":
-  app.run(debug=True)
+    app.run(debug=True)
