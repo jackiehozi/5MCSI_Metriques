@@ -9,7 +9,7 @@ app = Flask(__name__)
                                                                                                                                        
 @app.route('/')
 def hello_world():
-    return render_template('hello.html') #commit5
+    return render_template('hello.html') #commit6
 
 # Nouvelle route pour la page de contact
 @app.route("/contact/")
@@ -39,6 +39,12 @@ def meteo():
 @app.route("/rapport/")
 def mongraphique():
     return render_template("graphique.html")
+
+
+# Route pour afficher l'histogramme
+@app.route("/histogramme/")
+def histogramme():
+    return render_template("histogramme.html")
 
   
 if __name__ == "__main__":
