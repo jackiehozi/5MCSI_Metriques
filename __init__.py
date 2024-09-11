@@ -9,7 +9,7 @@ app = Flask(__name__)
                                                                                                                                        
 @app.route('/')
 def hello_world():
-    return render_template('hello.html') #commit7
+    return render_template('hello.html') #commit8
 
 # Nouvelle route pour la page de contact
 @app.route("/contact/")
@@ -45,6 +45,26 @@ def mongraphique():
 @app.route("/histogramme/")
 def histogramme():
     return render_template("histogramme.html")
+
+@app.route('/commits/')
+def commits():
+    response = requests.get('https://api.github.com/repos/OpenRSI/5MCSI_Metriques/commits')
+    commits_data = response.json()
+    
+    # Extraire les minutes des commits
+    commit_minutes = {}
+    for commit in commits_data:
+        commit_time = commit['commit']['author']['date']
+        date_object = datetime.strptime(commit_time, '%Y-%m-%dT%H:%M:%SZ')
+        minute = date_object.minute
+        if minute in commit_minutes:
+            commit_minutes[minute] += 1
+        else:
+            commit_minutes[minute] = 1
+    
+    # Préparer les données pour le graphique
+    results = [{'minute': minute, 'count': count} for minute, count in sorted(commit_minutes.items())]
+    return jsonify(results=results)
 
   
 if __name__ == "__main__":
