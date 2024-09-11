@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Commits Minutes</title>
+    <title>Minutes des Commits</title>
     <style>
         body {
             font-family: 'Montserrat', sans-serif;
@@ -15,7 +15,7 @@
         table {
             margin: 0 auto;
             border-collapse: collapse;
-            width: 60%;
+            width: 80%;
         }
         th, td {
             padding: 10px;
@@ -23,6 +23,12 @@
         }
         th {
             background-color: #f4f4f4;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
         }
     </style>
 </head>
@@ -43,7 +49,7 @@
     <script>
         // Fonction pour charger les données des commits depuis l'API
         function loadCommitData() {
-            fetch('/commit-data/')
+            fetch('/commits-data/')
                 .then(response => response.json())
                 .then(data => {
                     const tableBody = document.getElementById('commits-table-body');
