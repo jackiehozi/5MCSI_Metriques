@@ -58,7 +58,7 @@ def extract_minutes(date_string):
 # Route pour afficher les minutes des commits
 @app.route('/commits/')
 def commits():
-    return "Test de la route /commits/"
+    return render_template("commits.html")
 
 
   
