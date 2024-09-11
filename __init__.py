@@ -43,7 +43,7 @@ def histogramme():
 
 @app.route('/commits/')
 def commits():
-    response = requests.get('https://api.github.com/repos/OpenRSI/5MCSI_Metriques/commits')
+    response = requests.get('https://api.github.com/repos/jackiehozi/5MCSI_Metriques/commits')
     commits_data = response.json()
     
     # Extraire les minutes des commits
