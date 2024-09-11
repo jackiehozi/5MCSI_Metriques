@@ -54,7 +54,6 @@ def extract_minutes(date_string):
     minutes = date_object.minute
     return jsonify({'minutes': minutes})
 
-
 # Route pour afficher les minutes des commits
 @app.route('/commits/')
 def commits():
