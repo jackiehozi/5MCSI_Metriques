@@ -53,6 +53,26 @@ def extract_minutes(date_string):
     minutes = date_object.minute
     return jsonify({'minutes': minutes})
 
+
+# Route pour afficher les minutes des commits
+@app.route('/commits/')
+def commits():
+    response = requests.get('https://api.github.com/repos/jackiehozi/5MCSI_Metriques/commits')
+    commits_data = response.json()
+    
+    # Extraire les minutes des commits
+    commit_minutes = {}
+    for commit in commits_data:
+        commit_time = commit['commit']['author']['date']
+        date_object = datetime.strptime(commit_time, '%Y-%m-%dT%H:%M:%SZ')
+        minute = date_object.minute
+        commit_minutes[minute] = commit_minutes.get(minute, 0) + 1
+    
+    # Préparer les données pour le tableau
+    results = [{'minute': minute, 'count': count} for minute, count in sorted(commit_minutes.items())]
+    return jsonify(results=results)
+
+
   
 if __name__ == "__main__":
   app.run(debug=True)
