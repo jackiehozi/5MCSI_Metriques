@@ -1,13 +1,13 @@
-import requests
-import json
 from flask import Flask, render_template, jsonify
 from datetime import datetime
+import requests
+import json
 
 app = Flask(__name__)
 
 @app.route('/')
 def hello_world():
-    return render_template('hello.html')  # commit8
+    return render_template('hello.html')
 
 # Nouvelle route pour la page de contact
 @app.route("/contact/")
@@ -17,6 +17,7 @@ def contact():
 # Nouvelle route pour afficher les données météo de Tawarano
 @app.route('/tawarano/')
 def meteo():
+    # URL de l'API avec les données météo de Tawarano
     response = requests.get('https://samples.openweathermap.org/data/2.5/forecast?lat=0&lon=0&appid=xxx')
     json_content = response.json()  # Décoder et charger en JSON
     results = []
@@ -40,6 +41,7 @@ def mongraphique():
 def histogramme():
     return render_template("histogramme.html")
 
+# Route pour afficher les commits sous forme de graphique
 @app.route('/commits/')
 def commits():
     response = requests.get('https://api.github.com/repos/jackiehozi/5MCSI_Metriques/commits')
@@ -55,7 +57,9 @@ def commits():
     
     # Préparer les données pour le graphique
     results = [{'minute': minute, 'count': count} for minute, count in sorted(commit_minutes.items())]
-    return jsonify(results=results)
+    
+    # Rendre la page HTML et passer les données au template
+    return render_template('commits.html', data=results)
 
 if __name__ == "__main__":
     app.run(debug=True)
