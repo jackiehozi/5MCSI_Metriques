@@ -1,25 +1,28 @@
-from flask import Flask, render_template, jsonify
+from flask import Flask, render_template_string, render_template, jsonify
+from flask import render_template
+from flask import json
 from datetime import datetime
-import requests
-import json
-
-app = Flask(__name__)
-
+from urllib.request import urlopen
+import sqlite3
+                                                                                                                                       
+app = Flask(__name__)                                                                                                                  
+                                                                                                                                       
 @app.route('/')
 def hello_world():
-    return render_template('hello.html')
+    return render_template('hello.html') #commit6
 
 # Nouvelle route pour la page de contact
 @app.route("/contact/")
-def contact():
-    return render_template("contact.html")
+def MaPremiereAPI():
+    return "<h2>Ma page de contact</h2>"
 
 # Nouvelle route pour afficher les données météo de Tawarano
 @app.route('/tawarano/')
 def meteo():
     # URL de l'API avec les données météo de Tawarano
-    response = requests.get('https://samples.openweathermap.org/data/2.5/forecast?lat=0&lon=0&appid=xxx')
-    json_content = response.json()  # Décoder et charger en JSON
+    response = urlopen('https://samples.openweathermap.org/data/2.5/forecast?lat=0&lon=0&appid=xxx')
+    raw_content = response.read()  # Lire le contenu brut
+    json_content = json.loads(raw_content.decode('utf-8'))  # Décoder et charger en JSON
     results = []
 
     # Parcourir les éléments de la liste et extraire les dates et températures
@@ -31,35 +34,18 @@ def meteo():
     # Retourner les résultats sous forme de JSON
     return jsonify(results=results)
 
+
 # Nouvelle route pour le rapport graphique
 @app.route("/rapport/")
 def mongraphique():
     return render_template("graphique.html")
+
 
 # Route pour afficher l'histogramme
 @app.route("/histogramme/")
 def histogramme():
     return render_template("histogramme.html")
 
-# Route pour afficher les commits sous forme de graphique
-@app.route('/commits/')
-def commits():
-    response = requests.get('https://api.github.com/repos/jackiehozi/5MCSI_Metriques/commits')
-    commits_data = response.json()
-    
-    # Extraire les minutes des commits
-    commit_minutes = {}
-    for commit in commits_data:
-        commit_time = commit['commit']['author']['date']
-        date_object = datetime.strptime(commit_time, '%Y-%m-%dT%H:%M:%SZ')
-        minute = date_object.minute
-        commit_minutes[minute] = commit_minutes.get(minute, 0) + 1
-    
-    # Préparer les données pour le graphique
-    results = [{'minute': minute, 'count': count} for minute, count in sorted(commit_minutes.items())]
-    
-    # Rendre la page HTML et passer les données au template
-    return render_template('commits.html', data=results)
-
+  
 if __name__ == "__main__":
-    app.run(debug=True)
+  app.run(debug=True)
